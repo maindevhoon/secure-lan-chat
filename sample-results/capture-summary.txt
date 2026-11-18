@@ -1,0 +1,8 @@
+plaintext: Plain TCP, 4118 bytes, upload 1.66 ms, download 0.20 ms
+  frames containing chat marker: 2
+  frames containing file marker: 2
+  Frames with encrypted TLS records: 0
+tls: TLSv1.3 / TLS_AES_256_GCM_SHA384, 4118 bytes, upload 1.41 ms, download 0.13 ms
+  frames containing chat marker: 0
+  frames containing file marker: 0
+  Frames with encrypted TLS records: 26

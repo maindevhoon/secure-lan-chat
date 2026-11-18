@@ -1,0 +1,61 @@
+services:
+  certs:
+    build:
+      context: .
+      target: certs
+    environment:
+      CHAT_LAN_IP: ${CHAT_LAN_IP:-}
+    volumes:
+      - keys:/keys
+      - ./runtime/trust:/trust
+
+  server:
+    build:
+      context: .
+      target: application
+    depends_on:
+      certs:
+        condition: service_completed_successfully
+    environment:
+      CHAT_ROOM_KEY: ${CHAT_ROOM_KEY:-}
+    ports:
+      - "${CHAT_BIND:-127.0.0.1}:${CHAT_PORT:-7443}:7443"
+    volumes:
+      - keys:/keys:ro
+      - data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket, ssl; ctx = ssl.create_default_context(cafile='/keys/server.crt'); ctx.wrap_socket(socket.create_connection(('127.0.0.1', 7443), 2), server_hostname='server').close()"]
+      interval: 3s
+      timeout: 3s
+      retries: 8
+    init: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+
+  client:
+    profiles: ["tools"]
+    build:
+      context: .
+      target: application
+    entrypoint: ["python", "-m", "lanchat.client"]
+    user: "${CHAT_UID:-1000}:${CHAT_GID:-1000}"
+    volumes:
+      - ./runtime/trust:/trust:ro
+      - ./runtime/client:/client
+    stdin_open: true
+    tty: true
+
+  lab:
+    profiles: ["lab"]
+    build:
+      context: .
+      target: lab
+    network_mode: none
+    cap_add:
+      - NET_RAW
+    volumes:
+      - ./runtime/results:/results
+
+volumes:
+  data:
+  keys:

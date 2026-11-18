@@ -1,0 +1,6 @@
+.git
+.env
+runtime
+**/__pycache__
+.ruff_cache
+sample-results

@@ -1,0 +1,4 @@
+case,delay_ms,loss_probability,seed,unique_packets_received,unique_tcp_bytes,throughput_kbps,retransmissions,bottleneck_drops
+baseline,5,0,741,2396,2490840,1992.67,0,0
+higher_delay,75,0,741,2219,2306760,1845.41,0,0
+packet_loss,5,0.03,741,1406,1461240,1168.99,59,57
